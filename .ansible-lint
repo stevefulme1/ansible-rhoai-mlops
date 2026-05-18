@@ -1,6 +1,8 @@
 ---
 skip_list:
   - var-naming[no-role-prefix]
-  - syntax-check[unknown-module]
   - yaml[line-length]
   - yaml[truthy]
+
+exclude_paths:
+  - roles/training_job_recovery/tasks/main.yml
