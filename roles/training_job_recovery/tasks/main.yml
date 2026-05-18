@@ -73,7 +73,7 @@
       escalated: "{{ escalate }}"
     status_code: [200, 201, 202]
   when: notification_webhook | length > 0
-  ignore_errors: true
+  failed_when: false
 
 - name: Escalate persistent failure
   community.general.mail:
@@ -88,4 +88,4 @@
   when:
     - notification_email | length > 0
     - escalate or (recovery_run is defined and recovery_run is not changed)
-  ignore_errors: true
+  failed_when: false
