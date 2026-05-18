@@ -23,10 +23,10 @@ tags:
   - eda
   - event_driven
   - compliance
-  - eu_ai_act
+  - euaiact
   - gdpr
   - sovereignty
-  - data_residency
+  - dataresidency
 dependencies: {}
 repository: https://github.com/stevefulme1/ansible-rhoai-mlops
 documentation: https://github.com/stevefulme1/ansible-rhoai-mlops/blob/main/README.md
