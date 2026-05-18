@@ -33,6 +33,7 @@ options:
         description:
             - List of protected attributes to check (e.g., gender, race).
         type: list
+        elements: str
         required: true
     reference_dataset:
         description:
@@ -42,6 +43,7 @@ options:
         description:
             - Bias metrics to compute (e.g., disparate_impact, equal_opportunity).
         type: list
+        elements: str
 extends_documentation_fragment:
     - stevefulme1.rhoai_mlops.rhoai
 requirements:

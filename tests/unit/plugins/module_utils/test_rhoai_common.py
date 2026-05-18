@@ -8,7 +8,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import pytest
 
 from ansible_collections.stevefulme1.rhoai_mlops.plugins.module_utils.rhoai_common import (
     RHOAI_COMMON_ARGS,

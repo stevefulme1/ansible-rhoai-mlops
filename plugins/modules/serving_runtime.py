@@ -45,6 +45,7 @@ options:
         description:
             - List of supported model formats.
         type: list
+        elements: str
     resources:
         description:
             - Resource requests and limits.
@@ -103,7 +104,7 @@ def get_module_args():
         runtime_id=dict(type="str"),
         runtime_type=dict(type="str"),
         image=dict(type="str"),
-        supported_formats=dict(type="list"),
+        supported_formats=dict(type="list", elements="str"),
         resources=dict(type="dict"),
         state=dict(type="str", choices=["present", "absent"], default="present"),
     )

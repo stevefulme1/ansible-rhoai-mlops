@@ -10,7 +10,6 @@ __metaclass__ = type
 
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from ansible_collections.stevefulme1.rhoai_mlops.plugins.module_utils.rhoai_wait import (
     call_with_retry,
