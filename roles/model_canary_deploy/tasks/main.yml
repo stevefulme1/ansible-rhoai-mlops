@@ -91,4 +91,4 @@
       action: "{{ action }}"
     status_code: [200, 201, 202]
   when: notification_webhook | length > 0
-  ignore_errors: true
+  failed_when: false
