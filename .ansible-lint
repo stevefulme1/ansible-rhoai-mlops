@@ -1,0 +1,6 @@
+---
+skip_list:
+  - var-naming[no-role-prefix]
+  - syntax-check[unknown-module]
+  - yaml[line-length]
+  - yaml[truthy]
