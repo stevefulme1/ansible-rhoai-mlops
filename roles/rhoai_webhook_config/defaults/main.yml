@@ -1,0 +1,15 @@
+---
+rhoai_api_url: "https://rhoai.example.com"
+rhoai_api_token: ""
+rhoai_validate_certs: true
+rhoai_webhook_url: "https://eda-controller.example.com/api/v1/webhook"
+rhoai_webhook_secret: ""
+rhoai_webhook_events:
+  - "model.registered"
+  - "model.deployed"
+  - "model.deprecated"
+  - "model.retired"
+  - "pipeline.succeeded"
+  - "pipeline.failed"
+  - "monitor.alert"
+rhoai_webhook_namespace: "redhat-ods-applications"

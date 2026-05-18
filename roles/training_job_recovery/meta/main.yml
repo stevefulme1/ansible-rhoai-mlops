@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: training_job_recovery
+  author: Steve Fulmer
+  description: "Recover failed training jobs with checkpoint restore and resource reallocation"
+  company: Red Hat
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.16"
+  platforms:
+    - name: EL
+      versions:
+        - "9"
+    - name: Fedora
+      versions:
+        - all
+  galaxy_tags:
+    - rhoai
+    - mlops
+    - openshift
+    - ai
+dependencies: []

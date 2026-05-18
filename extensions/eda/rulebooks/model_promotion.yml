@@ -1,0 +1,38 @@
+---
+- name: Model Promotion
+  hosts: all
+  sources:
+    - stevefulme1.rhoai_mlops.model_monitoring:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs | default(true) }}"
+        poll_interval: 30
+  rules:
+    - name: Promote canary to production on passing metrics
+      condition: >-
+        event.model_monitoring.event_type == "canary_metrics_passed"
+      action:
+        run_playbook:
+          name: stevefulme1.rhoai_mlops.model_canary_deploy
+          extra_vars:
+            model_name: "{{ event.model_monitoring.model_name }}"
+            inference_service: "{{ event.model_monitoring.inference_service }}"
+            namespace: "{{ event.model_monitoring.namespace }}"
+            action: promote
+            canary_version: "{{ event.model_monitoring.metric_value }}"
+
+    - name: Rollback canary on failing metrics
+      condition: >-
+        event.model_monitoring.event_type == "canary_metrics_failed"
+        or (
+          event.model_monitoring.event_type == "latency_spike"
+          and event.model_monitoring.severity == "critical"
+        )
+      action:
+        run_playbook:
+          name: stevefulme1.rhoai_mlops.model_canary_deploy
+          extra_vars:
+            model_name: "{{ event.model_monitoring.model_name }}"
+            inference_service: "{{ event.model_monitoring.inference_service }}"
+            namespace: "{{ event.model_monitoring.namespace }}"
+            action: rollback

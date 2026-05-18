@@ -1,0 +1,91 @@
+---
+- name: Validate recovery parameters
+  ansible.builtin.assert:
+    that:
+      - namespace | length > 0
+    fail_msg: "Parameter namespace is required."
+
+- name: Get failed run details
+  stevefulme1.rhoai_mlops.pipeline_run_info:
+    api_url: "{{ rhoai_api_url }}"
+    api_token: "{{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    namespace: "{{ namespace }}"
+    run_id: "{{ run_id }}"
+  register: failed_run
+  when: run_id | length > 0
+
+- name: Check for checkpoint availability
+  ansible.builtin.uri:
+    url: "{{ rhoai_api_url }}/apis/v2beta1/runs/{{ run_id }}/checkpoints"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    status_code: [200, 404]
+  register: checkpoint_info
+  when:
+    - checkpoint_enabled
+    - run_id | length > 0
+
+- name: Set checkpoint parameters
+  ansible.builtin.set_fact:
+    recovery_params:
+      resume_from_checkpoint: "{{ checkpoint_info.json.checkpoint_path | default('') }}"
+    recovery_resources: {}
+  when: checkpoint_enabled and checkpoint_info is defined and checkpoint_info.status == 200
+
+- name: Scale resources for retry
+  ansible.builtin.set_fact:
+    recovery_resources:
+      memory: "{{ (failed_run.pipeline_runs[0].resources.memory | default('8Gi') | regex_replace('Gi','') | float * resource_scale_factor) | round | int }}Gi"
+      cpu: "{{ (failed_run.pipeline_runs[0].resources.cpu | default('4') | float * resource_scale_factor) | round | int }}"
+  when:
+    - failed_run is defined
+    - failed_run.pipeline_runs | length > 0
+    - not escalate
+
+- name: Retry pipeline run from checkpoint
+  stevefulme1.rhoai_mlops.pipeline_run:
+    api_url: "{{ rhoai_api_url }}"
+    api_token: "{{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    pipeline_id: "{{ pipeline_id }}"
+    namespace: "{{ namespace }}"
+    run_name: "{{ run_id }}-recovery"
+    parameters: "{{ recovery_params | default({}) }}"
+    wait: true
+    wait_timeout: 3600
+  register: recovery_run
+  when: not escalate
+
+- name: Send recovery notification
+  ansible.builtin.uri:
+    url: "{{ notification_webhook }}"
+    method: POST
+    body_format: json
+    body:
+      event: training_job_recovery
+      run_id: "{{ run_id }}"
+      pipeline_id: "{{ pipeline_id }}"
+      namespace: "{{ namespace }}"
+      recovery_status: "{{ 'succeeded' if recovery_run is changed else 'failed' }}"
+      escalated: "{{ escalate }}"
+    status_code: [200, 201, 202]
+  when: notification_webhook | length > 0
+  ignore_errors: true
+
+- name: Escalate persistent failure
+  community.general.mail:
+    host: localhost
+    to: "{{ notification_email }}"
+    subject: "Training Job Recovery Escalation: {{ run_id }}"
+    body: >-
+      Training job {{ run_id }} in namespace {{ namespace }} requires manual intervention.
+      Error: {{ error_message | default('Unknown') }}.
+      Pipeline: {{ pipeline_id }}.
+      Automatic recovery was {{ 'not attempted (escalation)' if escalate else 'unsuccessful' }}.
+  when:
+    - notification_email | length > 0
+    - escalate or (recovery_run is defined and recovery_run is not changed)
+  ignore_errors: true

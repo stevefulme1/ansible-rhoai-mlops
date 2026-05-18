@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+*.tar.gz
+tests/output/
+.tox/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
