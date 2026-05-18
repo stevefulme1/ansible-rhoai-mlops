@@ -103,10 +103,11 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install dependencies
-        run: pip install ansible-core>=2.16 pytest pytest-cov requests
+        run: pip install ansible-core>=2.16 pytest pytest-cov pytest-timeout requests
 
       - name: Run unit tests
         continue-on-error: true
+        timeout-minutes: 5
         working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
         env:
           PYTHONPATH: ${{ github.workspace }}
@@ -114,3 +115,4 @@ jobs:
           pytest tests/unit/
           -v
           --tb=short
+          --timeout=30
