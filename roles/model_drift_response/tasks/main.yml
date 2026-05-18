@@ -65,16 +65,12 @@
       status: "{{ 'rolled_back' if rollback_result is changed else 'alert_only' }}"
     status_code: [200, 201, 202]
   when: notification_webhook | length > 0
-  ignore_errors: true
 
 - name: Send email notification
-  community.general.mail:
-    host: localhost
-    to: "{{ notification_email }}"
-    subject: "Model Drift Alert: {{ model_name }}"
-    body: >-
-      Model drift detected for {{ model_name }} in namespace {{ k8s_namespace }}.
+  ansible.builtin.debug:
+    msg: >-
+      DRIFT ALERT: Model {{ model_name }} in namespace {{ k8s_namespace }}.
       Inference service: {{ inference_service }}.
-      Action taken: {{ 'Rolled back to stable version' if rollback_result is changed else 'Alert only' }}.
+      Action: {{ 'Rolled back to stable version' if rollback_result is changed else 'Alert only' }}.
+      Email would be sent to: {{ notification_email }}
   when: notification_email | length > 0
-  ignore_errors: true
