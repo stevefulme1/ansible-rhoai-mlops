@@ -19,6 +19,6 @@ galaxy_info:
     - openshift
     - ai
     - compliance
-    - eu_ai_act
+    - euaiact
     - gdpr
 dependencies: []
