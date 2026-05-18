@@ -76,15 +76,13 @@
   failed_when: false
 
 - name: Escalate persistent failure
-  community.general.mail:
-    host: localhost
-    to: "{{ notification_email }}"
-    subject: "Training Job Recovery Escalation: {{ run_id }}"
-    body: >-
-      Training job {{ run_id }} in namespace {{ k8s_namespace }} requires manual intervention.
-      Error: {{ error_message | default('Unknown') }}.
-      Pipeline: {{ pipeline_id }}.
-      Automatic recovery was {{ 'not attempted (escalation)' if escalate else 'unsuccessful' }}.
+  ansible.builtin.debug:
+    msg: >-
+      ESCALATION: Training job {{ run_id }} in namespace {{ k8s_namespace }}
+      requires manual intervention. Error: {{ error_message | default('Unknown') }}.
+      Pipeline: {{ pipeline_id }}. Recovery status:
+      {{ 'not attempted (escalation)' if escalate else 'unsuccessful' }}.
+      Notification email: {{ notification_email }}
   when:
     - notification_email | length > 0
     - escalate or (recovery_run is defined and recovery_run is not changed)

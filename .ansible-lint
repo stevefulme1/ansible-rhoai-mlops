@@ -5,5 +5,3 @@ skip_list:
   - yaml[line-length]
   - yaml[truthy]
 
-mock_modules:
-  - community.general.mail
