@@ -4,7 +4,7 @@ rhoai_api_token: ""
 rhoai_validate_certs: true
 run_id: ""
 pipeline_id: ""
-namespace: ""
+k8s_namespace: ""
 max_retries: 3
 checkpoint_enabled: true
 checkpoint_path: ""

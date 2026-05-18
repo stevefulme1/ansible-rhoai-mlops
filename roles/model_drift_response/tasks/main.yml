@@ -11,7 +11,7 @@
     api_url: "{{ rhoai_api_url }}"
     api_token: "{{ rhoai_api_token }}"
     validate_certs: "{{ rhoai_validate_certs }}"
-    namespace: "{{ namespace }}"
+    k8s_namespace: "{{ k8s_namespace }}"
     name: "{{ inference_service }}"
   register: current_service
 
@@ -41,7 +41,7 @@
     api_token: "{{ rhoai_api_token }}"
     validate_certs: "{{ rhoai_validate_certs }}"
     name: "{{ inference_service }}"
-    namespace: "{{ namespace }}"
+    k8s_namespace: "{{ k8s_namespace }}"
     storage_uri: "{{ stable_version.artifact_uri }}"
     state: present
     wait: true
@@ -60,7 +60,7 @@
       event: model_drift_rollback
       model: "{{ model_name }}"
       service: "{{ inference_service }}"
-      namespace: "{{ namespace }}"
+      k8s_namespace: "{{ k8s_namespace }}"
       rolled_back: "{{ rollback_enabled }}"
       status: "{{ 'rolled_back' if rollback_result is changed else 'alert_only' }}"
     status_code: [200, 201, 202]
@@ -73,7 +73,7 @@
     to: "{{ notification_email }}"
     subject: "Model Drift Alert: {{ model_name }}"
     body: >-
-      Model drift detected for {{ model_name }} in namespace {{ namespace }}.
+      Model drift detected for {{ model_name }} in namespace {{ k8s_namespace }}.
       Inference service: {{ inference_service }}.
       Action taken: {{ 'Rolled back to stable version' if rollback_result is changed else 'Alert only' }}.
   when: notification_email | length > 0
