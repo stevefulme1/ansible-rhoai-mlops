@@ -52,14 +52,10 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.stevefulme1.rhoai_mlops.plugins.module_utils.rhoai_common import (
     RHOAI_COMMON_ARGS,
-    READY_STATES,
-    DEAD_STATES,
-    to_dict,
 )
 from ansible_collections.stevefulme1.rhoai_mlops.plugins.module_utils.rhoai_auth import create_rhoai_client
 from ansible_collections.stevefulme1.rhoai_mlops.plugins.module_utils.rhoai_wait import (
     call_with_retry,
-    wait_for_resource,
 )
 
 
