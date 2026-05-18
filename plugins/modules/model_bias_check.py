@@ -86,9 +86,9 @@ def get_module_args():
     module_args = dict(
         inference_service=dict(type="str", required=True),
         namespace=dict(type="str", required=True),
-        protected_attributes=dict(type="list", required=True),
+        protected_attributes=dict(type="list", required=True, elements="str"),
         reference_dataset=dict(type="str"),
-        metrics=dict(type="list"),
+        metrics=dict(type="list", elements="str"),
     )
     module_args.update(RHOAI_COMMON_ARGS)
     return module_args
