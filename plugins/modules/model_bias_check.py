@@ -107,7 +107,7 @@ def main():
     params = module.params
 
     payload = {k: v for k, v in params.items() if v is not None and k not in
-                ("api_url", "api_token", "validate_certs", "wait", "wait_timeout", "wait_interval")}
+               ("api_url", "api_token", "validate_certs", "wait", "wait_timeout", "wait_interval")}
 
     response = call_with_retry(client.post, "/apis/v1/bias-checks", json=payload)
     if response.status_code not in (200, 201, 202):

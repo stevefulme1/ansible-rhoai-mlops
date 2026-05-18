@@ -147,8 +147,8 @@ def main():
         return
 
     payload = {k: v for k, v in params.items() if v is not None and k not in
-                ("api_url", "api_token", "validate_certs", "wait", "wait_timeout",
-                 "wait_interval", "state")}
+               ("api_url", "api_token", "validate_certs", "wait", "wait_timeout",
+                "wait_interval", "state")}
 
     if existing is None:
         if module.check_mode:
