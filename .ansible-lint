@@ -4,5 +4,6 @@ skip_list:
   - var-naming[no-reserved]
   - yaml[line-length]
   - yaml[truthy]
-  - syntax-check[unknown-module]
+
+warn_list:
   - ignore-errors
