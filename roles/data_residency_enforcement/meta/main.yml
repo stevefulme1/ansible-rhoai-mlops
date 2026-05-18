@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  role_name: data_residency_enforcement
+  author: Steve Fulmer
+  description: "Enforce data residency - geo-fencing policies, data locality constraints, cross-border audit logging, and sovereignty monitoring"
+  company: Red Hat
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.16"
+  platforms:
+    - name: EL
+      versions:
+        - "9"
+    - name: Fedora
+      versions:
+        - all
+  galaxy_tags:
+    - rhoai
+    - mlops
+    - openshift
+    - ai
+    - sovereignty
+    - data_residency
+    - gdpr
+dependencies: []

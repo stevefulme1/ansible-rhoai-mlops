@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  role_name: eu_ai_act_setup
+  author: Steve Fulmer
+  description: "Set up EU AI Act compliance framework - risk classification, audit logging, evidence collection, and compliance dashboard"
+  company: Red Hat
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.16"
+  platforms:
+    - name: EL
+      versions:
+        - "9"
+    - name: Fedora
+      versions:
+        - all
+  galaxy_tags:
+    - rhoai
+    - mlops
+    - openshift
+    - ai
+    - compliance
+    - eu_ai_act
+    - gdpr
+dependencies: []

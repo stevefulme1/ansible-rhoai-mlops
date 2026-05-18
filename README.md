@@ -3,8 +3,9 @@
 Ansible Collection for Red Hat OpenShift AI (RHOAI) MLOps event-driven automation.
 
 Provides modules for managing model registry, model serving, data science projects,
-ML pipelines, and model monitoring on OpenShift AI. Includes EDA event source plugins
-and rulebooks for event-driven ML operations workflows.
+ML pipelines, model monitoring, EU AI Act compliance, and sovereign data residency
+on OpenShift AI. Includes EDA event source plugins and rulebooks for event-driven
+ML operations workflows.
 
 ## Requirements
 
@@ -48,6 +49,24 @@ ansible-galaxy collection install stevefulme1.rhoai_mlops
 - `model_monitor_info` - Get monitoring status and alerts
 - `model_bias_check` - Run model bias and fairness checks
 
+### EU AI Act Compliance
+- `ai_act_compliance` - Manage EU AI Act compliance assessments
+- `ai_act_compliance_info` - Query compliance assessments
+- `model_risk_classification` - Classify AI models per EU AI Act risk tiers
+- `model_risk_classification_info` - Query model risk classifications
+- `audit_report` - Generate compliance audit reports
+- `audit_report_info` - Query existing audit reports
+- `compliance_evidence` - Manage compliance evidence artifacts
+- `compliance_evidence_info` - Query evidence artifacts
+
+### Sovereign Data Residency
+- `data_residency_policy` - Manage data residency policies for AI workloads
+- `data_residency_policy_info` - Query data residency policies
+- `geo_fence_audit` - Audit data flows against geo-fencing rules
+- `geo_fence_audit_info` - Query geo-fence audit results
+- `data_sovereignty_report` - Generate data sovereignty compliance reports
+- `data_sovereignty_report_info` - Query data sovereignty reports
+
 ## EDA Event Sources
 
 - `model_registry` - Watch model registry for lifecycle events
@@ -60,6 +79,8 @@ ansible-galaxy collection install stevefulme1.rhoai_mlops
 - `model_drift_response` - Automated drift response workflow
 - `model_canary_deploy` - Canary deployment with traffic splitting
 - `training_job_recovery` - Training job checkpoint recovery
+- `eu_ai_act_setup` - Set up EU AI Act compliance framework (risk classification, audit logging, evidence collection, compliance dashboard)
+- `data_residency_enforcement` - Enforce data residency (geo-fencing policies, data locality constraints, cross-border audit logging, sovereignty monitoring)
 
 ## EDA Rulebooks
 

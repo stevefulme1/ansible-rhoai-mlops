@@ -1,0 +1,51 @@
+---
+rhoai_api_url: "https://rhoai.example.com"
+rhoai_api_token: ""
+rhoai_validate_certs: true
+
+# Risk classification defaults
+risk_classifications: []
+# Example:
+#   - model_name: "fraud-detection-v1"
+#     risk_level: "high"
+#     classification_reason: "Financial decision-making"
+#     intended_use: "Automated fraud screening"
+#     human_oversight_required: true
+
+# Compliance assessments
+compliance_assessments: []
+# Example:
+#   - assessment_name: "q1-2026-assessment"
+#     ai_system_name: "fraud-detection"
+#     risk_category: "high"
+#     compliance_status: "pending"
+#     assessor: "compliance-team"
+
+# Default assessor for compliance assessments
+default_assessor: "automated-setup"
+
+# Risk thresholds for classification
+risk_threshold_high: 0.8
+risk_threshold_limited: 0.5
+risk_threshold_minimal: 0.2
+
+# Audit configuration
+audit_logging_enabled: true
+audit_report_name: "eu-ai-act-audit"
+audit_report_type: "full"
+audit_output_format: "json"
+audit_retention_days: 2555  # ~7 years per EU AI Act requirements
+
+# Evidence collection
+evidence_sources: []
+# Example:
+#   - evidence_name: "model-training-logs"
+#     evidence_type: "audit_log"
+#     artifact_url: "s3://compliance-bucket/training-logs/"
+#     description: "Training audit logs for model transparency"
+
+evidence_storage_path: "/opt/compliance/evidence"
+
+# Compliance dashboard
+deploy_compliance_dashboard: true
+compliance_dashboard_name: "eu-ai-act-dashboard"

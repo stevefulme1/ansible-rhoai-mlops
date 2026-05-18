@@ -1,0 +1,91 @@
+---
+- name: Validate EU AI Act setup parameters
+  ansible.builtin.assert:
+    that:
+      - rhoai_api_url | length > 0
+      - rhoai_api_token | length > 0
+    fail_msg: "Parameters rhoai_api_url and rhoai_api_token are required."
+
+- name: Create risk classification policies for each risk tier
+  stevefulme1.rhoai_mlops.model_risk_classification:
+    api_url: "{{ rhoai_api_url }}"
+    api_token: "{{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    model_name: "{{ item.model_name }}"
+    risk_level: "{{ item.risk_level }}"
+    classification_reason: "{{ item.classification_reason | default(omit) }}"
+    intended_use: "{{ item.intended_use | default(omit) }}"
+    human_oversight_required: "{{ item.human_oversight_required | default(false) }}"
+    state: present
+  loop: "{{ risk_classifications }}"
+  loop_control:
+    label: "{{ item.model_name }} ({{ item.risk_level }})"
+  when: risk_classifications | length > 0
+
+- name: Create compliance assessment for each AI system
+  stevefulme1.rhoai_mlops.ai_act_compliance:
+    api_url: "{{ rhoai_api_url }}"
+    api_token: "{{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    assessment_name: "{{ item.assessment_name }}"
+    ai_system_name: "{{ item.ai_system_name }}"
+    risk_category: "{{ item.risk_category | default('high') }}"
+    compliance_status: "{{ item.compliance_status | default('pending') }}"
+    assessor: "{{ item.assessor | default(default_assessor) }}"
+    state: present
+  loop: "{{ compliance_assessments }}"
+  loop_control:
+    label: "{{ item.assessment_name }}"
+  when: compliance_assessments | length > 0
+
+- name: Configure audit logging for compliance
+  stevefulme1.rhoai_mlops.audit_report:
+    api_url: "{{ rhoai_api_url }}"
+    api_token: "{{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    report_name: "{{ audit_report_name }}"
+    report_type: "{{ audit_report_type }}"
+    include_models: true
+    include_data_flows: true
+    output_format: "{{ audit_output_format }}"
+    state: present
+  when: audit_logging_enabled
+
+- name: Set up evidence collection for each evidence source
+  stevefulme1.rhoai_mlops.compliance_evidence:
+    api_url: "{{ rhoai_api_url }}"
+    api_token: "{{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    evidence_name: "{{ item.evidence_name }}"
+    evidence_type: "{{ item.evidence_type }}"
+    artifact_url: "{{ item.artifact_url | default(omit) }}"
+    related_assessment: "{{ item.related_assessment | default(omit) }}"
+    description: "{{ item.description | default(omit) }}"
+    state: present
+  loop: "{{ evidence_sources }}"
+  loop_control:
+    label: "{{ item.evidence_name }}"
+  when: evidence_sources | length > 0
+
+- name: Deploy compliance dashboard report
+  stevefulme1.rhoai_mlops.audit_report:
+    api_url: "{{ rhoai_api_url }}"
+    api_token: "{{ rhoai_api_token }}"
+    validate_certs: "{{ rhoai_validate_certs }}"
+    report_name: "{{ compliance_dashboard_name }}"
+    report_type: summary
+    include_models: true
+    include_data_flows: true
+    output_format: html
+    state: present
+  when: deploy_compliance_dashboard
+
+- name: Display EU AI Act setup summary
+  ansible.builtin.debug:
+    msg: >-
+      EU AI Act compliance framework configured.
+      Risk classifications: {{ risk_classifications | length }}.
+      Assessments: {{ compliance_assessments | length }}.
+      Evidence sources: {{ evidence_sources | length }}.
+      Audit logging: {{ 'enabled' if audit_logging_enabled else 'disabled' }}.
+      Dashboard: {{ 'deployed' if deploy_compliance_dashboard else 'skipped' }}.

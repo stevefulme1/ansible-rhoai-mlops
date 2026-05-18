@@ -1,15 +1,15 @@
 ---
 namespace: stevefulme1
 name: rhoai_mlops
-version: 1.0.0
+version: 1.1.0
 readme: README.md
 authors:
   - Steve Fulmer <sfulmer@redhat.com>
 description: >-
   Ansible Collection for Red Hat OpenShift AI (RHOAI) MLOps automation.
   Provides modules for model registry, model serving, data science projects,
-  pipelines, monitoring, EDA event sources, and rulebooks for event-driven
-  ML operations.
+  pipelines, monitoring, EU AI Act compliance, sovereign data residency,
+  EDA event sources, and rulebooks for event-driven ML operations.
 license:
   - GPL-3.0-or-later
 tags:
@@ -22,6 +22,11 @@ tags:
   - pipelines
   - eda
   - event_driven
+  - compliance
+  - eu_ai_act
+  - gdpr
+  - sovereignty
+  - data_residency
 dependencies: {}
 repository: https://github.com/stevefulme1/ansible-rhoai-mlops
 documentation: https://github.com/stevefulme1/ansible-rhoai-mlops/blob/main/README.md
