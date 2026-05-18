@@ -38,7 +38,7 @@
 - name: Scale resources for retry
   ansible.builtin.set_fact:
     recovery_resources:
-      memory: "{{ (failed_run.pipeline_runs[0].resources.memory | default('8Gi') | regex_replace('Gi','') | float * resource_scale_factor) | round | int }}Gi"
+      memory: "{{ (failed_run.pipeline_runs[0].resources.memory | default('8Gi') | regex_replace('Gi', '') | float * resource_scale_factor) | round | int }}Gi"
       cpu: "{{ (failed_run.pipeline_runs[0].resources.cpu | default('4') | float * resource_scale_factor) | round | int }}"
   when:
     - failed_run is defined
