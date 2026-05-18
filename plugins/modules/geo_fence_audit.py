@@ -105,7 +105,11 @@ def get_module_args():
     module_args = dict(
         audit_name=dict(type="str", required=True),
         policy_name=dict(type="str"),
-        scan_scope=dict(type="str", choices=['all', 'training_data', 'model_artifacts', 'inference_logs'], default="all"),
+        scan_scope=dict(
+            type="str",
+            choices=['all', 'training_data', 'model_artifacts', 'inference_logs'],
+            default="all",
+        ),
         report_violations=dict(type="bool", default=True),
         auto_remediate=dict(type="bool", default=False),
         state=dict(type="str", choices=['present', 'absent'], default="present"),
