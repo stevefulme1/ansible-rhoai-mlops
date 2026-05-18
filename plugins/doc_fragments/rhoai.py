@@ -38,4 +38,9 @@ options:
             - Maximum time in seconds to wait for the resource to reach the desired state.
         type: int
         default: 600
+    wait_interval:
+        description:
+            - Polling interval in seconds when waiting for resource state changes.
+        type: int
+        default: 10
 """
