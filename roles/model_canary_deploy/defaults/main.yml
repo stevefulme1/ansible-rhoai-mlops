@@ -4,7 +4,7 @@ rhoai_api_token: ""
 rhoai_validate_certs: true
 model_name: ""
 inference_service: ""
-namespace: ""
+k8s_namespace: ""
 canary_version_uri: ""
 canary_traffic_percent: 10
 promotion_threshold_accuracy: 0.95

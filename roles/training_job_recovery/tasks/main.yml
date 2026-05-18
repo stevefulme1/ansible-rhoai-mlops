@@ -2,15 +2,15 @@
 - name: Validate recovery parameters
   ansible.builtin.assert:
     that:
-      - namespace | length > 0
-    fail_msg: "Parameter namespace is required."
+      - k8s_namespace | length > 0
+    fail_msg: "Parameter k8s_namespace is required."
 
 - name: Get failed run details
   stevefulme1.rhoai_mlops.pipeline_run_info:
     api_url: "{{ rhoai_api_url }}"
     api_token: "{{ rhoai_api_token }}"
     validate_certs: "{{ rhoai_validate_certs }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ k8s_namespace }}"
     run_id: "{{ run_id }}"
   register: failed_run
   when: run_id | length > 0
@@ -51,7 +51,7 @@
     api_token: "{{ rhoai_api_token }}"
     validate_certs: "{{ rhoai_validate_certs }}"
     pipeline_id: "{{ pipeline_id }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ k8s_namespace }}"
     run_name: "{{ run_id }}-recovery"
     parameters: "{{ recovery_params | default({}) }}"
     wait: true
@@ -68,7 +68,7 @@
       event: training_job_recovery
       run_id: "{{ run_id }}"
       pipeline_id: "{{ pipeline_id }}"
-      namespace: "{{ namespace }}"
+      namespace: "{{ k8s_namespace }}"
       recovery_status: "{{ 'succeeded' if recovery_run is changed else 'failed' }}"
       escalated: "{{ escalate }}"
     status_code: [200, 201, 202]
@@ -81,7 +81,7 @@
     to: "{{ notification_email }}"
     subject: "Training Job Recovery Escalation: {{ run_id }}"
     body: >-
-      Training job {{ run_id }} in namespace {{ namespace }} requires manual intervention.
+      Training job {{ run_id }} in namespace {{ k8s_namespace }} requires manual intervention.
       Error: {{ error_message | default('Unknown') }}.
       Pipeline: {{ pipeline_id }}.
       Automatic recovery was {{ 'not attempted (escalation)' if escalate else 'unsuccessful' }}.

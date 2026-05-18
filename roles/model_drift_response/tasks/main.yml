@@ -3,7 +3,7 @@
   ansible.builtin.assert:
     that:
       - inference_service | length > 0
-      - namespace | length > 0
+      - k8s_namespace | length > 0
     fail_msg: "Parameters inference_service and namespace are required."
 
 - name: Get current model version info

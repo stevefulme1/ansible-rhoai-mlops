@@ -3,7 +3,7 @@
   ansible.builtin.assert:
     that:
       - inference_service | length > 0
-      - namespace | length > 0
+      - k8s_namespace | length > 0
     fail_msg: "Parameters inference_service and namespace are required."
 
 - name: Deploy canary version
@@ -14,7 +14,7 @@
         api_url: "{{ rhoai_api_url }}"
         api_token: "{{ rhoai_api_token }}"
         validate_certs: "{{ rhoai_validate_certs }}"
-        namespace: "{{ namespace }}"
+        namespace: "{{ k8s_namespace }}"
         name: "{{ inference_service }}"
       register: current_service
 
@@ -24,7 +24,7 @@
         api_token: "{{ rhoai_api_token }}"
         validate_certs: "{{ rhoai_validate_certs }}"
         name: "{{ inference_service }}-endpoint"
-        namespace: "{{ namespace }}"
+        namespace: "{{ k8s_namespace }}"
         inference_service: "{{ inference_service }}"
         traffic_split:
           stable: "{{ 100 - canary_traffic_percent }}"
@@ -44,7 +44,7 @@
         api_token: "{{ rhoai_api_token }}"
         validate_certs: "{{ rhoai_validate_certs }}"
         name: "{{ inference_service }}-endpoint"
-        namespace: "{{ namespace }}"
+        namespace: "{{ k8s_namespace }}"
         inference_service: "{{ inference_service }}"
         traffic_split:
           stable: "0"
@@ -71,7 +71,7 @@
         api_token: "{{ rhoai_api_token }}"
         validate_certs: "{{ rhoai_validate_certs }}"
         name: "{{ inference_service }}-endpoint"
-        namespace: "{{ namespace }}"
+        namespace: "{{ k8s_namespace }}"
         inference_service: "{{ inference_service }}"
         traffic_split:
           stable: "100"
@@ -87,7 +87,7 @@
       event: "canary_{{ action }}"
       model: "{{ model_name }}"
       service: "{{ inference_service }}"
-      namespace: "{{ namespace }}"
+      namespace: "{{ k8s_namespace }}"
       action: "{{ action }}"
     status_code: [200, 201, 202]
   when: notification_webhook | length > 0

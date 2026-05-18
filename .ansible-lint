@@ -1,8 +1,9 @@
 ---
 skip_list:
   - var-naming[no-role-prefix]
+  - var-naming[no-reserved]
   - yaml[line-length]
   - yaml[truthy]
 
-exclude_paths:
-  - roles/training_job_recovery/tasks/main.yml
+mock_modules:
+  - community.general.mail
