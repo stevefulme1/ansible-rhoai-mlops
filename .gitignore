@@ -8,3 +8,18 @@ dist/
 build/
 .pytest_cache/
 .mypy_cache/
+
+# Security and editor artifacts
+.env
+.env.*
+*.pem
+*.key
+*.crt
+vault_pass*
+credentials*
+*.retry
+.vscode/
+.idea/
+.DS_Store
+*.log
+.venv/
