@@ -1,11 +1,11 @@
 ---
 namespace: stevefulme1
 name: rhoai_mlops
-version: 1.1.1
+version: 0.0.1
 readme: README.md
 authors:
   - Steve Fulmer <sfulmer@redhat.com>
-description: >-
+description: "EXPERIMENTAL - proof of concept, not production ready. >-"
   Ansible Collection for Red Hat OpenShift AI (RHOAI) MLOps automation.
   Provides modules for model registry, model serving, data science projects,
   pipelines, monitoring, EU AI Act compliance, sovereign data residency,
