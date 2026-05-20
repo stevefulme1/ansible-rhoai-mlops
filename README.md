@@ -1,3 +1,7 @@
+> **EXPERIMENTAL** - This collection is a proof of concept and is not production ready.
+> Modules may use placeholder API endpoints and have not been validated against real infrastructure.
+> Do not use in production environments.
+
 # Ansible Collection: stevefulme1.rhoai_mlops
 
 Ansible Collection for Red Hat OpenShift AI (RHOAI) MLOps event-driven automation.
