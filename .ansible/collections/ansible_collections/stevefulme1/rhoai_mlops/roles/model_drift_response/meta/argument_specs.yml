@@ -1,0 +1,16 @@
+---
+argument_specs:
+  main:
+    short_description: "model drift response"
+    options:
+      rhoai_api_url:
+        description: RHOAI API endpoint URL.
+        type: str
+      rhoai_api_token:
+        description: RHOAI API token for authentication.
+        type: str
+        no_log: true
+      rhoai_validate_certs:
+        description: Whether to validate TLS certificates.
+        type: bool
+        default: true

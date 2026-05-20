@@ -1,0 +1,38 @@
+---
+- name: Model Drift Rollback
+  hosts: all
+  sources:
+    - stevefulme1.rhoai_mlops.model_monitoring:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs | default(true) }}"
+        poll_interval: 15
+        severity_filter: warning
+  rules:
+    - name: Rollback on drift detection
+      condition: >-
+        event.model_monitoring.event_type == "drift_detected"
+        and event.model_monitoring.severity in ["warning", "critical"]
+      action:
+        run_playbook:
+          name: stevefulme1.rhoai_mlops.model_drift_response
+          extra_vars:
+            model_name: "{{ event.model_monitoring.model_name }}"
+            inference_service: "{{ event.model_monitoring.inference_service }}"
+            namespace: "{{ event.model_monitoring.namespace }}"
+            drift_metric: "{{ event.model_monitoring.metric_name }}"
+            drift_value: "{{ event.model_monitoring.metric_value }}"
+            drift_threshold: "{{ event.model_monitoring.threshold }}"
+
+    - name: Alert on accuracy degradation
+      condition: >-
+        event.model_monitoring.event_type == "accuracy_below_threshold"
+      action:
+        run_playbook:
+          name: stevefulme1.rhoai_mlops.model_drift_response
+          extra_vars:
+            model_name: "{{ event.model_monitoring.model_name }}"
+            inference_service: "{{ event.model_monitoring.inference_service }}"
+            namespace: "{{ event.model_monitoring.namespace }}"
+            accuracy_value: "{{ event.model_monitoring.metric_value }}"
+            accuracy_threshold: "{{ event.model_monitoring.threshold }}"

@@ -1,0 +1,94 @@
+---
+- name: Validate canary deployment parameters
+  ansible.builtin.assert:
+    that:
+      - inference_service | length > 0
+      - k8s_namespace | length > 0
+    fail_msg: "Parameters inference_service and namespace are required."
+
+- name: Deploy canary version
+  when: action == "deploy"
+  block:
+    - name: Get current inference service
+      stevefulme1.rhoai_mlops.inference_service_info:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs }}"
+        namespace: "{{ k8s_namespace }}"
+        name: "{{ inference_service }}"
+      register: current_service
+
+    - name: Configure canary traffic split
+      stevefulme1.rhoai_mlops.model_endpoint:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs }}"
+        name: "{{ inference_service }}-endpoint"
+        namespace: "{{ k8s_namespace }}"
+        inference_service: "{{ inference_service }}"
+        traffic_split:
+          stable: "{{ 100 - canary_traffic_percent }}"
+          canary: "{{ canary_traffic_percent }}"
+        state: present
+
+    - name: Wait for evaluation period
+      ansible.builtin.pause:
+        seconds: "{{ evaluation_duration_seconds }}"
+
+- name: Promote canary to production
+  when: action == "promote"
+  block:
+    - name: Update traffic to 100% canary
+      stevefulme1.rhoai_mlops.model_endpoint:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs }}"
+        name: "{{ inference_service }}-endpoint"
+        namespace: "{{ k8s_namespace }}"
+        inference_service: "{{ inference_service }}"
+        traffic_split:
+          stable: "0"
+          canary: "100"
+        state: present
+
+    - name: Tag canary as new stable version
+      stevefulme1.rhoai_mlops.model_version:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs }}"
+        model_id: "{{ model_name }}"
+        version_name: "{{ canary_version | default('canary') }}"
+        labels:
+          stable: "true"
+        state: present
+
+- name: Rollback canary deployment
+  when: action == "rollback"
+  block:
+    - name: Remove canary traffic
+      stevefulme1.rhoai_mlops.model_endpoint:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs }}"
+        name: "{{ inference_service }}-endpoint"
+        namespace: "{{ k8s_namespace }}"
+        inference_service: "{{ inference_service }}"
+        traffic_split:
+          stable: "100"
+          canary: "0"
+        state: present
+
+- name: Send deployment notification
+  ansible.builtin.uri:
+    url: "{{ notification_webhook }}"
+    method: POST
+    body_format: json
+    body:
+      event: "canary_{{ action }}"
+      model: "{{ model_name }}"
+      service: "{{ inference_service }}"
+      namespace: "{{ k8s_namespace }}"
+      action: "{{ action }}"
+    status_code: [200, 201, 202]
+  when: notification_webhook | length > 0
+  failed_when: false

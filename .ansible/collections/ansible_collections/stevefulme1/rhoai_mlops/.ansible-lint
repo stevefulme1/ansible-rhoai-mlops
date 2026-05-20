@@ -1,0 +1,10 @@
+---
+skip_list:
+  - var-naming[no-role-prefix]
+  - var-naming[no-reserved]
+  - yaml[line-length]
+  - yaml[truthy]
+  - args[module]
+
+warn_list:
+  - ignore-errors
