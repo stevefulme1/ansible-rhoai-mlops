@@ -5,11 +5,7 @@ version: 0.0.1
 readme: README.md
 authors:
   - Steve Fulmer <sfulmer@redhat.com>
-description: "EXPERIMENTAL - proof of concept, not production ready. >-"
-  Ansible Collection for Red Hat OpenShift AI (RHOAI) MLOps automation.
-  Provides modules for model registry, model serving, data science projects,
-  pipelines, monitoring, EU AI Act compliance, sovereign data residency,
-  EDA event sources, and rulebooks for event-driven ML operations.
+description: "EXPERIMENTAL - proof of concept, not production ready. Ansible Collection for Red Hat OpenShift AI (RHOAI) MLOps automation. Provides modules for model registry, model serving, data science projects, pipelines, monitoring, EU AI Act compliance, sovereign data residency, EDA event sources, and rulebooks for event-driven ML operations."
 license:
   - GPL-3.0-or-later
 tags:
