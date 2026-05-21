@@ -1,0 +1,54 @@
+---
+# Integration tests for stevefulme1.rhoai_mlops.pipeline_run
+# Pipeline runs are triggered (not CRUD with state)
+
+- name: Test pipeline_run lifecycle
+  block:
+    - name: Trigger pipeline run (check mode)
+      stevefulme1.rhoai_mlops.pipeline_run:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs | default(false) }}"
+        pipeline_id: "test-pipeline"
+        namespace: "{{ rhoai_namespace }}"
+        run_name: "test-run-checkmode"
+        parameters:
+          learning_rate: "0.01"
+      check_mode: true
+      register: check_result
+
+    - name: Verify check mode reports changed
+      ansible.builtin.assert:
+        that:
+          - check_result is changed
+
+    - name: Trigger pipeline run
+      stevefulme1.rhoai_mlops.pipeline_run:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs | default(false) }}"
+        pipeline_id: "test-pipeline"
+        namespace: "{{ rhoai_namespace }}"
+        run_name: "test-run-integration"
+        parameters:
+          learning_rate: "0.01"
+      register: run_result
+
+    - name: Verify run result
+      ansible.builtin.assert:
+        that:
+          - run_result is changed
+          - run_result.pipeline_run is defined
+
+    - name: Fetch pipeline run info
+      stevefulme1.rhoai_mlops.pipeline_run_info:
+        api_url: "{{ rhoai_api_url }}"
+        api_token: "{{ rhoai_api_token }}"
+        validate_certs: "{{ rhoai_validate_certs | default(false) }}"
+        namespace: "{{ rhoai_namespace }}"
+      register: info_result
+
+    - name: Verify info returns data
+      ansible.builtin.assert:
+        that:
+          - info_result.pipeline_runs is defined

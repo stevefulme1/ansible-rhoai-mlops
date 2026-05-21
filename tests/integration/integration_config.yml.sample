@@ -1,0 +1,8 @@
+---
+# RHOAI integration test configuration
+# Copy to integration_config.yml and fill in values
+
+rhoai_api_url: "https://rhoai.example.com"
+rhoai_api_token: "your-bearer-token-here"
+rhoai_namespace: "test-namespace"
+rhoai_validate_certs: false
