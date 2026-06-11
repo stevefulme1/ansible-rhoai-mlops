@@ -1,0 +1,66 @@
+---
+stevefulme1.rhoai_mlops.*:
+  query: >-
+    (
+      {
+        "data_science_project": "MLOps Project",
+        "model_registry": "ML Model",
+        "model_version": "Model Version",
+        "model_endpoint": "Model Endpoint",
+        "inference_service": "Inference Service",
+        "serving_runtime": "Serving Runtime",
+        "notebook": "Notebook",
+        "pipeline": "Pipeline",
+        "pipeline_run": "Pipeline Run",
+        "model_monitor": "Model Monitor"
+      } as $mapping |
+      (.data_science_project // .registered_model // .model_version // .model_endpoint //
+       .inference_service // .serving_runtime // .notebook // .pipeline // .pipeline_run //
+       .model_monitor // .) |
+      (if type=="array" then .[] else if type=="object" then . else empty end end) as $data |
+      select($data.id != null or $data.name != null) |
+      (
+        if $data | has("project_id") then "data_science_project"
+        elif $data | has("model_id") then "model_registry"
+        elif $data | has("version") and ($data | has("model_id")) then "model_version"
+        elif $data | has("endpoint_url") then "model_endpoint"
+        elif $data | has("predictor") then "inference_service"
+        elif $data | has("runtime") then "serving_runtime"
+        elif $data | has("image") and ($data | has("notebook")) then "notebook"
+        elif $data | has("pipeline_id") and ($data | has("status")) then "pipeline_run"
+        elif $data | has("pipeline_id") then "pipeline"
+        elif $data | has("metrics") then "model_monitor"
+        else "unknown"
+        end
+      ) as $node_type |
+      (
+        if $node_type == "data_science_project" then "project"
+        elif $node_type == "model_registry" then "model"
+        elif $node_type == "model_version" then "version"
+        elif $node_type == "model_endpoint" then "endpoint"
+        elif $node_type == "inference_service" then "service"
+        elif $node_type == "serving_runtime" then "runtime"
+        elif $node_type == "notebook" then "notebook"
+        elif $node_type == "pipeline_run" then "run"
+        elif $node_type == "pipeline" then "pipeline"
+        elif $node_type == "model_monitor" then "monitor"
+        else "unknown"
+        end
+      ) as $sub_node_type |
+      {
+        name: ($data.id // $data.name),
+        canonical_facts: {
+          name: ($data.name // "UNKNOWN"),
+          id: ($data.id // $data.name),
+          node_type: $node_type
+        },
+        facts: {
+          infra_type: "rhoai_mlops",
+          infra_bucket: ($mapping[$node_type] // "UNKNOWN"),
+          device_type: $sub_node_type,
+          description: ($data.description // ""),
+          labels: ($data.labels // {}),
+          state: ($data.state // "unknown")
+        }
+      }
+    )
